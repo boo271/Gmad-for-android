@@ -1,0 +1,71 @@
+{
+ "itemId": "160250458",
+ "appId": 4000,
+ "depotId": 4000,
+ "gid": "629170255479464089",
+ "fileSize": 20687048,
+ "files": [
+  {
+   "name": "160250458.gma",
+   "size": 20687048,
+   "chunks": 20,
+   "flags": 0
+  }
+ ],
+ "manifest": {
+  "depotId": 4000,
+  "gid": 629170255479464089,
+  "filenamesEncrypted": false,
+  "cbDiskOriginal": 20687048,
+  "cbDiskCompressed": 5399776,
+  "uniqueChunks": 20
+ },
+ "chunks": [
+  {
+   "file": "chunk-c9b59fe291e42f36619554111dfe8c30abe324a3.bin",
+   "sha1": "c9b59fe291e42f36619554111dfe8c30abe324a3",
+   "cbOriginal": 1048576,
+   "cbCompressed": 260336,
+   "offset": 0,
+   "plainSha1Ok": true,
+   "containerMagic": "VSZa",
+   "containerSize": 260336,
+   "plainSize": 1048576
+  },
+  {
+   "file": "chunk-6cb79788e0efef0660a1f1b37d2ca8b623067db1.bin",
+   "sha1": "6cb79788e0efef0660a1f1b37d2ca8b623067db1",
+   "cbOriginal": 1048576,
+   "cbCompressed": 361216,
+   "offset": 1048576,
+   "plainSha1Ok": true,
+   "containerMagic": "VSZa",
+   "containerSize": 361216,
+   "plainSize": 1048576
+  },
+  {
+   "file": "chunk-47f9c2d9b8897edcea4ce9e3c87652c48df7b9d8.bin",
+   "sha1": "47f9c2d9b8897edcea4ce9e3c87652c48df7b9d8",
+   "cbOriginal": 1048576,
+   "cbCompressed": 335152,
+   "offset": 10485760,
+   "plainSha1Ok": true,
+   "containerMagic": "VSZa",
+   "containerSize": 335152,
+   "plainSize": 1048576
+  },
+  {
+   "file": "chunk-41a0141b601f75ee6a29d5330fd28cb2078f00e6.bin",
+   "sha1": "41a0141b601f75ee6a29d5330fd28cb2078f00e6",
+   "cbOriginal": 764104,
+   "cbCompressed": 231472,
+   "offset": 19922944,
+   "plainSha1Ok": true,
+   "containerMagic": "VSZa",
+   "containerSize": 231472,
+   "plainSize": 764104
+  }
+ ],
+ "manifestUrlTemplate": "https://{host}:{port}/depot/{depotId}/manifest/{gid}/5/{code}",
+ "chunkUrlTemplate": "https://{host}:{port}/depot/{depotId}/chunk/{sha1hex}"
+}

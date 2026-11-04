@@ -1,0 +1,18 @@
+{
+  "plainSize": 41061,
+  "sha1": "627f99a3d1eea3b9dfddbd2734c61a067475e351",
+  "containers": [
+    {
+      "file": "container-lzma.bin",
+      "magic": "VZa",
+      "containerSize": 336,
+      "sha1": "627f99a3d1eea3b9dfddbd2734c61a067475e351"
+    },
+    {
+      "file": "container-zip.bin",
+      "magic": "PK",
+      "containerSize": 610,
+      "sha1": "627f99a3d1eea3b9dfddbd2734c61a067475e351"
+    }
+  ]
+}

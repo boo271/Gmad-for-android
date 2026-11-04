@@ -1,0 +1,29 @@
+{
+ "messages": [
+  {
+   "emsg": 5514,
+   "name": "CMsgClientLogon",
+   "hex": "08ac800428aeceb5e805"
+  },
+  {
+   "emsg": 8905,
+   "name": "CMsgClientPICSAccessTokenRequest",
+   "hex": "08f28b01"
+  },
+  {
+   "emsg": 8903,
+   "name": "CMsgClientPICSProductInfoRequest",
+   "hex": "0a0e08f28b0110eefea2bdc5edb2ee11180020002801"
+  },
+  {
+   "emsg": 151,
+   "name": "CContentServerDirectory_GetManifestRequestCode_Request",
+   "hex": "08a01f10a01f1899c1e1e8b8e0d0dd08"
+  },
+  {
+   "emsg": 5438,
+   "name": "CMsgClientGetDepotDecryptionKey",
+   "hex": "08a01f10a01f"
+  }
+ ]
+}

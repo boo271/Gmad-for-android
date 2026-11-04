@@ -9,6 +9,7 @@ captures/
 .externalNativeBuild/
 .cxx/
 screenshots/
+keystore/
 keystore.properties
 *.apk
 *.aab

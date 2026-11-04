@@ -1,0 +1,20 @@
+Gmad
+Copyright (c) 2025 boo271
+
+The Gmad application code is licensed under the MIT License (see LICENSE).
+The third-party components below remain under their own licenses.
+
+This product includes software developed by Airlift
+(https://github.com/airlift/aircompressor), licensed under the Apache
+License, Version 2.0. The vendored zstd decoder is in
+app/src/main/java/com/gmodkit/tools/steam/zstd, and XxHash64 derives from
+https://github.com/airlift/slice.
+
+This product includes XZ for Java (org.tukaani:xz), which is in the public
+domain.
+
+This product includes AndroidX, Jetpack Compose, Kotlin, Kotlin Coroutines,
+and AndroidX DocumentFile, licensed under the Apache License, Version 2.0.
+
+A copy of the Apache License, Version 2.0 is included at
+app/src/main/assets/licenses/Apache-2.0.txt.

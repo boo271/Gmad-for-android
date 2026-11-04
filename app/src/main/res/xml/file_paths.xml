@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-files-path
+        name="gmad_output"
+        path="Gmad_Extracted/" />
+    <cache-path
+        name="gmad_cache"
+        path="." />
+</paths>
