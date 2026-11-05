@@ -118,5 +118,5 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     // Unit tests read the recorded Steam fixtures with a real org.json; the
     // mockable android.jar stubs these classes out.
-    testImplementation("org.json:json:20240303")
+    testImplementation("org.json:json:20260814")
 }
