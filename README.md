@@ -83,7 +83,7 @@ Do not commit, upload, or share the key or `keystore.properties`.
 
 ## Privacy
 
-Gmad does not collect, store, or send personal data. There is no login, no telemetry, no advertising ID, and no crash reporting. Files you open stay on your device. The only network requests are Steam's public endpoints and an optional Workshop resolver you configure yourself. The app does not check for updates on its own; new versions are posted on the Releases page.
+Gmad does not collect, store, or send personal data. There is no login, no telemetry, no advertising ID, and no crash reporting. Files you open stay on your device. The only network requests are Steam's public endpoints, an optional Workshop resolver you configure yourself, and a check of GitHub's public Releases API for new versions at most once a day. Update checks send no personal data, and automatic checks can be turned off in Settings; a manual "Check now" button stays available.
 
 ## Legal
 

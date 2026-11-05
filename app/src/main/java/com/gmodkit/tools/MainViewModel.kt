@@ -24,6 +24,8 @@ import com.gmodkit.tools.core.VpkMetadata
 import com.gmodkit.tools.core.VpkMissingArchiveException
 import com.gmodkit.tools.core.ZipNames
 import com.gmodkit.tools.network.Http
+import com.gmodkit.tools.network.UpdateChecker
+import com.gmodkit.tools.network.UpdateRelease
 import com.gmodkit.tools.network.WorkshopClient
 import com.gmodkit.tools.network.WorkshopException
 import com.gmodkit.tools.network.WorkshopInfo
@@ -40,6 +42,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedOutputStream
@@ -118,6 +121,11 @@ data class UiState(
     val workshopLoading: Boolean = false,
     val workshopError: String? = null,
     val workshopApiBase: String = "",
+    val updatesEnabled: Boolean = true,
+    val updateChecking: Boolean = false,
+    val availableUpdate: UpdateRelease? = null,
+    val updateStatus: String = "",
+    val lastUpdateCheck: Long = 0L,
     val versionName: String = BuildConfig.VERSION_NAME,
     val versionCode: Int = BuildConfig.VERSION_CODE
 )
@@ -138,6 +146,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var prepareJob: Job? = null
     private var extractJob: Job? = null
     private var workshopJob: Job? = null
+    private var updateJob: Job? = null
 
     private var prepareGeneration = 0
     private var workshopGeneration = 0
@@ -153,11 +162,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             it.copy(
                 outputTreeUri = tree,
                 outputLabel = outputLabel(tree),
-                workshopApiBase = workshopApi
+                workshopApiBase = workshopApi,
+                updatesEnabled = prefs.getBoolean(KEY_UPDATES_ENABLED, true),
+                lastUpdateCheck = prefs.getLong(KEY_LAST_UPDATE_CHECK, 0L)
             )
         }
 
         maybe_show_startup_dialog()
+        maybeCheckForUpdates()
     }
 
     /**
@@ -1157,6 +1169,72 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         return true
     }
 
+    fun setUpdatesEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_UPDATES_ENABLED, enabled).apply()
+        _state.update { it.copy(updatesEnabled = enabled, updateStatus = "") }
+        if (enabled) maybeCheckForUpdates()
+    }
+
+    fun checkForUpdatesNow() {
+        checkForUpdates(manual = true)
+    }
+
+    fun dismissUpdate() {
+        _state.update { it.copy(availableUpdate = null) }
+    }
+
+    fun downloadUpdate() {
+        val update = _state.value.availableUpdate ?: return
+        val url = update.downloadUrl
+        if (!url.startsWith("https://", ignoreCase = true)) {
+            show_dialogg("Error", "The update link is not secure.")
+            return
+        }
+        dismissUpdate()
+        openUrl(url)
+    }
+
+    private fun maybeCheckForUpdates() {
+        if (!_state.value.updatesEnabled) return
+        val now = System.currentTimeMillis()
+        if (now - _state.value.lastUpdateCheck < CHECK_INTERVAL_MS) return
+        checkForUpdates(manual = false)
+    }
+
+    private fun checkForUpdates(manual: Boolean) {
+        if (_state.value.updateChecking) return
+        updateJob?.cancel()
+        updateJob = viewModelScope.launch {
+            _state.update { it.copy(updateChecking = true, updateStatus = "") }
+            try {
+                val release = withContext(Dispatchers.IO) { UpdateChecker.fetchLatest() }
+                val now = System.currentTimeMillis()
+                prefs.edit().putLong(KEY_LAST_UPDATE_CHECK, now).apply()
+                val newer = UpdateChecker.isNewer(release.version, _state.value.versionName)
+                _state.update {
+                    it.copy(
+                        updateChecking = false,
+                        lastUpdateCheck = now,
+                        availableUpdate = if (newer) release else null,
+                        updateStatus = if (manual && !newer) "Gmad is up to date." else ""
+                    )
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                val now = System.currentTimeMillis()
+                prefs.edit().putLong(KEY_LAST_UPDATE_CHECK, now).apply()
+                _state.update {
+                    it.copy(
+                        updateChecking = false,
+                        lastUpdateCheck = now,
+                        updateStatus = if (manual) "Could not check for updates." else ""
+                    )
+                }
+            }
+        }
+    }
+
     fun setStartupDontShow(value: Boolean) {
         _state.update { it.copy(startupDontShow = value) }
     }
@@ -1250,6 +1328,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         prepareJob?.cancel()
         extractJob?.cancel()
         workshopJob?.cancel()
+        updateJob?.cancel()
         try {
             openedGma?.close()
         } catch (_: Exception) {
@@ -1276,6 +1355,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         private const val KEY_OUTPUT_TREE = "output_tree"
         private const val KEY_STARTUP_HIDDEN = "startup_hidden"
         private const val KEY_WORKSHOP_API = "workshop_api_base"
+        private const val KEY_UPDATES_ENABLED = "updates_enabled"
+        private const val KEY_LAST_UPDATE_CHECK = "last_update_check"
+        private const val CHECK_INTERVAL_MS = 24L * 60L * 60L * 1000L
         private const val OUTPUT_DIR = "Gmad_Extracted"
     }
 }

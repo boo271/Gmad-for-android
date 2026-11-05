@@ -50,6 +50,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -77,6 +78,7 @@ import com.gmodkit.tools.ResultState
 import com.gmodkit.tools.SelectedFile
 import com.gmodkit.tools.UiState
 import com.gmodkit.tools.VpkFolderFile
+import com.gmodkit.tools.network.UpdateRelease
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -178,6 +180,15 @@ fun GmadScreen(activity: MainActivity, viewModel: MainViewModel) {
     }
     if (state.showStartup && !showSplash) {
         StartupDialog(state = state, viewModel = viewModel)
+    }
+    if (!state.showStartup) {
+        state.availableUpdate?.let { update ->
+            UpdateDialog(
+                update = update,
+                currentVersion = state.versionName,
+                viewModel = viewModel
+            )
+        }
     }
     if (state.showVpkPicker) {
         VpkPickerDialog(files = state.vpkFolderFiles, viewModel = viewModel)
@@ -840,7 +851,8 @@ private fun AboutDialog(state: UiState, viewModel: MainViewModel) {
                     "Pick a file, check the details, then extract to a ZIP. Everything is " +
                         "processed on your device and your files are not uploaded. Workshop " +
                         "metadata comes from Steam's public API. The app never asks for a Steam " +
-                        "account and has no ads or tracking.",
+                        "account and has no ads or tracking. It checks GitHub for new releases " +
+                        "at most once a day, and that can be turned off in Settings.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -996,6 +1008,50 @@ private fun SettingsDialog(
                 )
 
                 HorizontalDivider()
+                Text("Updates", style = MaterialTheme.typography.titleSmall)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            "Check automatically",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            "Checks GitHub once a day for a new release.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = state.updatesEnabled,
+                        onCheckedChange = viewModel::setUpdatesEnabled
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = if (state.updateChecking) {
+                            "Checking for updates..."
+                        } else {
+                            state.updateStatus
+                        },
+                        modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    TextButton(
+                        onClick = viewModel::checkForUpdatesNow,
+                        enabled = !state.updateChecking
+                    ) {
+                        Text("Check now")
+                    }
+                }
+
+                HorizontalDivider()
                 TextButton(onClick = viewModel::resetStartupMessage) {
                     Text("Show startup message again")
                 }
@@ -1080,6 +1136,42 @@ private fun StartupDialog(state: UiState, viewModel: MainViewModel) {
         confirmButton = {
             TextButton(onClick = viewModel::close_startup_dialog) {
                 Text("OK")
+            }
+        }
+    )
+}
+
+@Composable
+private fun UpdateDialog(
+    update: UpdateRelease,
+    currentVersion: String,
+    viewModel: MainViewModel
+) {
+    AlertDialog(
+        onDismissRequest = viewModel::dismissUpdate,
+        title = { Text("Update available") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    "Gmad ${update.version} is available. You are on $currentVersion.",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    "Download the new APK in your browser, then install it over this app. " +
+                        "Your settings and files stay on this device.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = viewModel::downloadUpdate) {
+                Text("Download")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = viewModel::dismissUpdate) {
+                Text("Later")
             }
         }
     )

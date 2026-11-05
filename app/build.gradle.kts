@@ -11,6 +11,9 @@ fun buildConfigString(value: String): String {
 }
 
 val workshopApiBase = providers.gradleProperty("gmad.workshopApi").orElse("").get()
+val updateApiUrl = providers.gradleProperty("gmad.updateApi")
+    .orElse("https://api.github.com/repos/boo271/Gmad-for-android/releases/latest")
+    .get()
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties().apply {
@@ -31,6 +34,7 @@ android {
         versionName = "2.1"
 
         buildConfigField("String", "WORKSHOP_API_BASE", buildConfigString(workshopApiBase))
+        buildConfigField("String", "UPDATE_API_URL", buildConfigString(updateApiUrl))
     }
 
     signingConfigs {
