@@ -1,5 +1,9 @@
 # Gmad
 
+[![Android CI](https://github.com/boo271/Gmad-for-android/actions/workflows/android.yml/badge.svg?branch=main)](https://github.com/boo271/Gmad-for-android/actions/workflows/android.yml)
+
+**[Download the latest APK](https://github.com/boo271/Gmad-for-android/releases/latest)** (Android 7.0 or newer)
+
 Gmad extracts Garry's Mod addons (`.gma`) and Valve Pak files (`.vpk`) on Android, and it can download Garry's Mod Workshop items without a Steam account.
 
 The project started in October 2025 as a Python/Kivy app. This repository now contains the native Kotlin/Jetpack Compose rewrite, version 2.1.
