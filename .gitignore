@@ -15,3 +15,11 @@ keystore.properties
 *.aab
 *.keystore
 *.jks
+
+# Local signing material and secrets
+*.p12
+*.pfx
+*.pem
+*.key
+.env
+.env.*
