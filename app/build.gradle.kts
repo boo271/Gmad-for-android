@@ -113,7 +113,7 @@ dependencies {
 
     implementation("androidx.documentfile:documentfile:1.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
-    implementation("org.tukaani:xz:1.10")
+    implementation("org.tukaani:xz:1.12")
 
     testImplementation("junit:junit:4.13.2")
     // Unit tests read the recorded Steam fixtures with a real org.json; the
